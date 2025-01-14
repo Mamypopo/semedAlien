@@ -3,42 +3,102 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "postgresql" // Adjust based on your database type
   url      = env("DATABASE_URL")
 }
 
-model Alien {
-  id          Int       @id @default(autoincrement())
-  reqcode     String    @db.VarChar(50) // เลขคำขอ
-  alcode      String    @unique @db.VarChar(50) // เลขอ้างอิงคนต่างด้าว
-  altype      String?   @db.VarChar(20) // ประเภทคนต่างด้าว
-  alprefix    String?   @db.VarChar(20) // คำนำหน้า
-  alnameen    String    @db.VarChar(100) // ชื่อภาษาอังกฤษ
-  alsnameen   String    @db.VarChar(100) // นามสกุลภาษาอังกฤษ
-  alnameth    String    @db.VarChar(100) // ชื่อภาษาไทย
-  alsnameth   String    @db.VarChar(100) // นามสกุลภาษาไทย
-  nickname    String?   @db.VarChar(50) // ชื่อเล่น
-  email       String?   @db.VarChar(255) // อีเมล
-  bloodtype   String?   @db.VarChar(5) // กรุ๊ปเลือด
-  religion    String?   @db.VarChar(50) // ศาสนา
-  phone1      String?   @db.VarChar(20) // เบอร์โทรศัพท์ 1
-  phone2      String?   @db.VarChar(20) // เบอร์โทรศัพท์ 2
-  address     String?   @db.Text // ที่อยู่
-  district    String?   @db.VarChar(100) // ตำบล
-  subdistrict String?   @db.VarChar(100) // อำเภอ
-  province    String?   @db.VarChar(100) // จังหวัด
-  postalcode  String?   @db.VarChar(10) // รหัสไปรษณีย์
-  note        String?   @db.Text // หมายเหตุ
-  albdate     DateTime? @db.Timestamptz // วันเดือนปีเกิด
-  algender    String    @db.VarChar(10) // เพศ
-  alnation    String    @db.VarChar(50) // สัญชาติ
-  alposid     String    @db.VarChar(50) // ประเภทอาชีพ
-  createdAt   DateTime  @default(now()) // วันที่สร้างข้อมูล
-  updatedAt   DateTime  @updatedAt // วันที่แก้ไขข้อมูลล่าสุด
-  alprefixen  String?   @db.VarChar(20) // คำนำหน้าภาษาอังกฤษ (MR/MRS/MISS)
-  empname     String?   @db.VarChar(255) // ชื่อบริษัท
-  wkaddress   String?   @db.Text // ที่อยู่บริษัท
-  btname      String?   @db.VarChar(100) // ประเภทธุรกิจ
-
+model Users {
+  id                    Int              @id @default(autoincrement())
+  username              String           @unique
+  password              String
+  CreatedForeignWorkers ForeignWorkers[] @relation("UserCreatedForeignWorker")
+  UpdatedForeignWorkers ForeignWorkers[] @relation("UserUpdatedForeignWorker")
+  CreatedApiRequests    ApiRequests[]    @relation("UserCreatedApiRequest")
+  UpdatedApiRequests    ApiRequests[]    @relation("UserUpdatedApiRequest")
+  CreatedHealthChecks   HealthChecks[]   @relation("UserCreatedHealthCheck")
+  UpdatedHealthChecks   HealthChecks[]   @relation("UserUpdatedHealthCheck")
 }
 
+model Employers {
+  id        Int     @id @default(autoincrement())
+  empname   String  @db.VarChar(100) // ชื่อนายจ้าง / ชื่อสถานประกอบการ
+  wkaddress String? @db.VarChar(1000) // สถานที่ทำงาน
+  btname    String? @db.VarChar(50) // ประเภทกิจการ
+
+  ForeignWorkers ForeignWorkers[]
+}
+
+model ForeignWorkers {
+  id          Int       @id @default(autoincrement())
+  employer_id Int
+  Employers   Employers @relation(fields: [employer_id], references: [id], onDelete: Cascade)
+
+  alcode       String    @unique @db.VarChar(13) // เลขอ้างอิงคนต่างด้าว
+  altype       Int? // 1: ขึ้นทะเบียนคนต่างด้าวผิดกฏหมาย, 2: ต่ออายุคนต่างด้าว
+  alprefix     Int?
+  alprefixen   String?   @db.VarChar(50)
+  alname_en    String    @db.VarChar(100) // ชื่อตัวภาษาอังกฤษ
+  alsname_en   String?   @db.VarChar(100) // ชื่อสกุลภาษาอังกฤษ
+  alprefix_th  String?   @db.VarChar(50)
+  alname_th    String?   @db.VarChar(100) // ชื่อตัวภาษาไทย
+  alsname_th   String?   @db.VarChar(100) // ชื่อสกุลภาษาไทย
+  albdate      DateTime? @db.Date // ปีเดือนวันทีเกิด
+  algender     Int? // เพศ 1: ชาย, 2: หญิง
+  alnation     String?   @db.Char(1) // สัญชาติ
+  alposid      Int? // ประเภทอาชีพ
+  blood_group  String?   @db.Char(3) // กรุ๊ปเลือด
+  nickname     String?   @db.VarChar(50) // ชื่อเล่น
+  religion     String?   @db.VarChar(50) // ศาสนา
+  phone_number String?   @db.VarChar(15) // เบอร์โทรศัพท์
+  email        String?   @db.VarChar(100)
+  address      String?   @db.VarChar(500)
+  subdistrict  String?   @db.VarChar(100)
+  district     String?   @db.VarChar(100)
+  province     String?   @db.VarChar(100)
+  postal_code  String?   @db.VarChar(10)
+  remark       String?   @db.Text
+
+  HealthChecks HealthChecks[]
+
+  isDelete      Boolean   @default(false)
+  createdBy     Int?
+  createdByUser Users?    @relation(references: [id], fields: [createdBy], name: "UserCreatedForeignWorker")
+  createdOn     DateTime
+  updatedBy     Int?
+  updatedByUser Users?    @relation(references: [id], fields: [updatedBy], name: "UserUpdatedForeignWorker")
+  updatedOn     DateTime?
+}
+
+model HealthChecks {
+  id             Int            @id @default(autoincrement())
+  alcode         String
+  ForeignWorkers ForeignWorkers @relation(fields: [alcode], references: [alcode], onDelete: Cascade)
+  alchkhos       String?        @db.VarChar(500) // ชื่อ โรงพยาบาล
+  alchkstatus    Int? // ผลการตรวจสุขภาพ
+  alchkdate      DateTime       @db.Date // วันที่ตรวจสุขภาพ
+  alchkprovid    String?        @db.Char(2) // รหัสจังหวัดที่ตรวจสุขภาพ
+  licenseno      String?        @db.VarChar(50) // เลขที่ใบอนุญาตประกอบวิชาชีพ
+  chkname        String?        @db.VarChar(100) // ชื่อ-นามสกุลแพทย์
+  chkposition    String?        @db.VarChar(100) // ตำแหน่งแพทย์
+  alchkdesc      String?        @db.VarChar(500) // รายละเอียดผลตรวจสุขภาพเพิ่มเติม
+  alchkdoc       String?        @db.VarChar(500) // URL เอกสารอ้างอิงผลการตรวจสุขภาพ
+  isDelete       Boolean        @default(false)
+  createdBy      Int?
+  createdByUser  Users?         @relation(references: [id], fields: [createdBy], name: "UserCreatedHealthCheck")
+  createdOn      DateTime
+  updatedBy      Int?
+  updatedByUser  Users?         @relation(references: [id], fields: [updatedBy], name: "UserUpdatedHealthCheck")
+  updatedOn      DateTime?
+}
+
+model ApiRequests {
+  id            Int       @id @default(autoincrement())
+  reqcode       String
+  isDelete      Boolean   @default(false)
+  createdBy     Int?
+  createdByUser Users?    @relation(references: [id], fields: [createdBy], name: "UserCreatedApiRequest")
+  createdOn     DateTime
+  updatedBy     Int?
+  updatedByUser Users?    @relation(references: [id], fields: [updatedBy], name: "UserUpdatedApiRequest")
+  updatedOn     DateTime?
+}

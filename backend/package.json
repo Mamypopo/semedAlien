@@ -1,14 +1,13 @@
 {
-  "name": "worker-management",
+  "name": "med",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "type": "module",
-
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "local": "nodemon src/server.js"
+    "dev": "nodemon --watch src --exec 'node -r dotenv/config' ./src/app.js dotenv_config_path=.env",
+    "start": "node -r dotenv/config ./src/app.js dotenv_config_path=.env",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
@@ -19,5 +18,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "prisma": "^6.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }

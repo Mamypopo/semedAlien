@@ -1,0 +1,233 @@
+{
+	"info": {
+		"_postman_id": "15d6b097-e411-4b6a-8ad8-fba7b5156b52",
+		"name": "DOE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14750821"
+	},
+	"item": [
+		{
+			"name": "Alien Management",
+			"item": [
+				{
+					"name": "Get alien list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/internal/alien/GetAlienList",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"internal",
+								"alien",
+								"GetAlienList"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get alien  by alcode",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"alcode\": \"FW-000001\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/internal/alien/GetAlienList",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"internal",
+								"alien",
+								"GetAlienList"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get alien code list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/internal/alien/GetAlienCodeList",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"internal",
+								"alien",
+								"GetAlienCodeList"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ManualSyncData",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/internal/alien/SyncData",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"internal",
+								"alien",
+								"SyncData"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Alien Detail",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"alcode\": \"FW-000001\",\n    \"altype\": 1,\n    \"alprefix\": 1,\n    \"alprefixen\": \"MR.\",\n    \"alname_en\": \"John\",\n    \"alsname_en\": \"Doe\",\n    \"alprefix_th\": \"นาย\",\n    \"alname_th\": \"จอห์น\",\n    \"alsname_th\": \"โด\",\n    \"albdate\": \"1990-01-01T00:00:00.000Z\",\n    \"algender\": 1,\n    \"alnation\": \"M\",\n    \"alposid\": 1,\n    \"blood_group\": \"O  \",\n    \"nickname\": \"Johnny\",\n    \"religion\": \"Christianity\",\n    \"phone_number\": \"0812345678\",\n    \"email\": \"john.doe@example.com\",\n    \"address\": \"789 Maple St\",\n    \"subdistrict\": \"SubA\",\n    \"district\": \"DistrictA\",\n    \"province\": \"ProvinceA\",\n    \"postal_code\": \"12345\",\n    \"remark\": \"Hardworking.\",\n    \"isDelete\": false,\n    \"createdBy\": 2,\n    \"createdOn\": \"2025-01-14T00:00:00.000Z\",\n    \"updatedBy\": null,\n    \"updatedOn\": null,\n    \"healthCheck\": {\n        \"id\": 4,\n        \"alchkhos\": \"\",\n        \"alchkstatus\": \"\",\n        \"alchkdate\": \"\",\n        \"alchkprovid\": \"\",\n        \"licenseno\": \"\",\n        \"chkname\": \"\",\n        \"chkposition\": \"\",\n        \"alchkdesc\": \"\",\n        \"alchkdoc\": \"\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/internal/alien/SaveAlienDetail",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"internal",
+								"alien",
+								"SaveAlienDetail"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Req Code Management",
+			"item": [
+				{
+					"name": "Get Req code list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/internal/reqcode/GetReqCodeList",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"internal",
+								"reqcode",
+								"GetReqCodeList"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Req code",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"reqcode\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/internal/reqcode/CreateReqCode",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"internal",
+								"reqcode",
+								"CreateReqCode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "External",
+			"item": [
+				{
+					"name": "Get Daily Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/external/GetDailyHealthCheckResult?token=test&datapage=1&searchdate=12-01-2025",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"external",
+								"GetDailyHealthCheckResult"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "test"
+								},
+								{
+									"key": "datapage",
+									"value": "1"
+								},
+								{
+									"key": "searchdate",
+									"value": "12-01-2025"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
