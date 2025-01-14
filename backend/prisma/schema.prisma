@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Alien {
+  id          Int       @id @default(autoincrement())
+  reqcode     String    @db.VarChar(50) // เลขคำขอ
+  alcode      String    @unique @db.VarChar(50) // เลขอ้างอิงคนต่างด้าว
+  altype      String?   @db.VarChar(20) // ประเภทคนต่างด้าว
+  alprefix    String?   @db.VarChar(20) // คำนำหน้า
+  alnameen    String    @db.VarChar(100) // ชื่อภาษาอังกฤษ
+  alsnameen   String    @db.VarChar(100) // นามสกุลภาษาอังกฤษ
+  alnameth    String    @db.VarChar(100) // ชื่อภาษาไทย
+  alsnameth   String    @db.VarChar(100) // นามสกุลภาษาไทย
+  nickname    String?   @db.VarChar(50) // ชื่อเล่น
+  email       String?   @db.VarChar(255) // อีเมล
+  bloodtype   String?   @db.VarChar(5) // กรุ๊ปเลือด
+  religion    String?   @db.VarChar(50) // ศาสนา
+  phone1      String?   @db.VarChar(20) // เบอร์โทรศัพท์ 1
+  phone2      String?   @db.VarChar(20) // เบอร์โทรศัพท์ 2
+  address     String?   @db.Text // ที่อยู่
+  district    String?   @db.VarChar(100) // ตำบล
+  subdistrict String?   @db.VarChar(100) // อำเภอ
+  province    String?   @db.VarChar(100) // จังหวัด
+  postalcode  String?   @db.VarChar(10) // รหัสไปรษณีย์
+  note        String?   @db.Text // หมายเหตุ
+  albdate     DateTime? @db.Timestamptz // วันเดือนปีเกิด
+  algender    String    @db.VarChar(10) // เพศ
+  alnation    String    @db.VarChar(50) // สัญชาติ
+  alposid     String    @db.VarChar(50) // ประเภทอาชีพ
+  createdAt   DateTime  @default(now()) // วันที่สร้างข้อมูล
+  updatedAt   DateTime  @updatedAt // วันที่แก้ไขข้อมูลล่าสุด
+  alprefixen  String?   @db.VarChar(20) // คำนำหน้าภาษาอังกฤษ (MR/MRS/MISS)
+  empname     String?   @db.VarChar(255) // ชื่อบริษัท
+  wkaddress   String?   @db.Text // ที่อยู่บริษัท
+  btname      String?   @db.VarChar(100) // ประเภทธุรกิจ
+
+}
+

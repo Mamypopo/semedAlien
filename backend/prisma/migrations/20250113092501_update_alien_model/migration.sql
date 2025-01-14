@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Alien" ALTER COLUMN "albdate" SET DATA TYPE TIMESTAMPTZ;
