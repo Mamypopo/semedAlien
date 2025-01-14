@@ -2,13 +2,17 @@ import axios from "axios";
 import appConfig from "../app.config.js";
 
 const instance = axios.create();
+//ใช้แบบ  instance axios และไปใช้ในpath
+// const instance = axios.create({
+//   baseURL : 'https;//......./'
+// });
 
 export const getAlienListFromService = async ({
   alcode = "",
   reqcode = "",
 }) => {
   try {
-    const url = "your_url_here"; // Replace with the actual URL
+    const url = "your_url_here"; // Replace with the actual URL endpoint 
     const params = {
       token: appConfig.apiToken,
     };
@@ -23,6 +27,10 @@ export const getAlienListFromService = async ({
     const { data } = await instance.get(url, {
       params,
     });
+
+    // const { data } = await instance.get('/alien', {
+    //   params,
+    // });
 
     return data;
   } catch (error) {

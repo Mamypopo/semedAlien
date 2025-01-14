@@ -1,11 +1,16 @@
-<script setup>
-import { RouterView } from 'vue-router'
-</script>
-
 <template>
-  <div>
+  <SidebarMenu>
     <router-view></router-view>
-  </div>
+  </SidebarMenu>
 </template>
+<script>
+import SidebarMenu from '@/components/Sidebar.vue'
 
+export default {
+  name: 'App',
+  components: {
+    SidebarMenu
+  }
+}
+</script>
 <style></style>
