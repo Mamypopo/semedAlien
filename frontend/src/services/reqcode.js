@@ -7,7 +7,6 @@ export const reqCodeService = {
         return api.get('/internal/reqcode/GetReqCodeList')
     },
     
-  
     // สร้าง request code ใหม่
     create(reqcode) {
         return api.post('/internal/reqcode/CreateReqCode', { reqcode })

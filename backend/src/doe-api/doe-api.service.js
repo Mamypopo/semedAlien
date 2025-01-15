@@ -28,6 +28,8 @@ export const getAlienListFromService = async ({
       params,
     });
 
+    
+    // ใช้อันนี้แทนถ้าได้ url
     // const { data } = await instance.get('/alien', {
     //   params,
     // });

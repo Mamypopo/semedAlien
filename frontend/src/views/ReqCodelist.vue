@@ -156,7 +156,6 @@
   
         try {
           await reqCodeService.create(this.newReqCode)
-           // แสดง Success Alert
         await Swal.fire({
           icon: 'success',
           title: 'เพิ่มสำเร็จ',
@@ -180,7 +179,6 @@
       },
   
       async deleteReqCode(id) {
-      // เพิ่มการยืนยันก่อนลบ
       const result = await Swal.fire({
         title: 'ยืนยันการลบ',
         text: "คุณต้องการลบ ReqCode นี้ใช่หรือไม่?",
@@ -195,8 +193,6 @@
       if (result.isConfirmed) {
         try {
           await reqCodeService.delete(id)
-          
-          // แสดง Success Alert
           await Swal.fire({
             icon: 'success',
             title: 'ลบสำเร็จ',
