@@ -24,6 +24,7 @@ export const getDailyHealthCheck = async (searchdate, datapage) => {
 
   const count = await prisma.healthChecks.count({
     where: {
+      alchkdate: new Date(searchdate.split('-').reverse().join('-')),
       isDelete: false,
     }
   });
