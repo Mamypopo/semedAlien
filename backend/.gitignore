@@ -46,3 +46,4 @@ coverage/
 # Other
 *.sql
 *.sqlite
+".env" 
