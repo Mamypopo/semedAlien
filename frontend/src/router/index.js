@@ -1,5 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import ReqCodeList from '@/views/Reqcodelist.vue'
+import ReqCodeList from '@/views/ReqCodelist.vue'
+import MedicalHistoryList from '../views/MedicalHistoryList.vue'
+import DoctorAssessment from '../views/DoctorAssessment.vue'
+import TakeAhistory from '../views/TakeAhistory.vue'
 import AlienList from '@/views/AlienList.vue'
 import AlienDetail from '@/views/AlienDetail.vue'
 import AlienSearch from '@/views/AlienSearch.vue'
@@ -16,12 +19,12 @@ const router = createRouter({
       component: AlienList
     },
     {
-      path: '/aliens/:alcode',  
+      path: '/aliens/:alcode',
       name: 'AlienDetail',
       component: AlienDetail
     },
     {
-      path: '/aliensearch',  
+      path: '/aliensearch',
       name: 'AlienSearch',
       component: AlienSearch
     },
@@ -29,6 +32,22 @@ const router = createRouter({
       path: '/reqcodes',
       name: 'ReqCodeList',
       component: ReqCodeList
+    },
+    {
+      path: '/aliens/TakeAhistory',
+      name: 'MedicalHistory',
+      component: TakeAhistory
+
+    },
+    {
+      path: '/aliens/medical-histories',
+      name: 'MedicalHistoryList',
+      component: MedicalHistoryList
+    },
+    {
+      path: '/aliens/Doctor-Assessment',
+      name: 'DoctorAssessment',
+      component: DoctorAssessment
     }
   ],
 })

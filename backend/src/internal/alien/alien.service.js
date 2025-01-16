@@ -113,9 +113,91 @@ export const getAlienByAlCode = async (alcode) => {
   // };
 }
 
+export const searchAliens = async ({ hn, alcode, name }) => {
+  // สร้าง where condition ตามข้อมูลที่ส่งมา
+  const where = {
+    isDelete: false
+  };
+
+  // เงื่อนไขเฉพาะฟิลด์ที่มีการกรอกข้อมูล
+  const conditions = [];
+
+  if (hn) {
+    conditions.push({ hn: { equals: hn } });
+  }
+
+  if (alcode) {
+    conditions.push({ alcode: { equals: alcode } });
+  }
+
+  if (name) {
+    conditions.push({
+      OR: [
+        { alname_en: { contains: name } },
+        { alname_th: { contains: name } }
+      ]
+    });
+  }
+
+  // ถ้ามีเงื่อนไขการค้นหา ให้ใช้ OR
+  if (conditions.length > 0) {
+    where.OR = conditions;
+  }
+
+  return await prisma.foreignWorkers.findMany({
+    where,
+    orderBy: {
+      alcode: 'asc'
+    },
+    select: {
+      hn: true,
+      alcode: true,
+      alname_en: true,
+      alsname_en: true,
+      alname_th: true,
+      alsname_th: true,
+      createdOn: true,
+
+    }
+  });
+};
+
+
+const generateHN = async (provinceCode) => {
+  const currentYear = (new Date().getFullYear() + 543).toString().slice(-2);
+  const prefix = `A${currentYear}${provinceCode}`;
+
+  // หาเลข running number ล่าสุดของปีและจังหวัดนี้
+  const lastHN = await prisma.foreignWorkers.findFirst({
+    where: {
+      AND: [
+        { hn: { not: null } },
+        { hn: { startsWith: prefix } }
+      ]
+    },
+    orderBy: {
+      hn: 'desc'
+    }
+  });
+
+  let runningNumber = '00001';
+  if (lastHN) {
+    const lastNumber = parseInt(lastHN.hn.slice(-5));
+    runningNumber = (lastNumber + 1).toString().padStart(5, '0');
+  }
+
+  return `${prefix}${runningNumber}`;
+};
+
 export const saveAlienDetail = async (data) => {
+  // ถ้ามี HN อยู่แล้วให้ใช้ค่าเดิม ถ้าไม่มีและมีรหัสจังหวัดให้สร้างใหม่
+  let hn = data.hn;
+  if (!hn && data.healthCheck?.alchkprovid) {
+    hn = await generateHN(data.healthCheck.alchkprovid);
+  }
   const result = await prisma.foreignWorkers.update({
     data: {
+      hn: hn,
       altype: data.altype,
       alprefix: data.alprefix,
       alprefixen: data.alprefixen,
@@ -139,6 +221,7 @@ export const saveAlienDetail = async (data) => {
       province: data.province,
       postal_code: data.postal_code,
       remark: data.remark,
+      updatedOn: new Date(),
     },
     where: {
       alcode: data.alcode,
@@ -272,6 +355,5 @@ export const syncData = async (reqcode) => {
       }
     })
   }
-
-
 }
+

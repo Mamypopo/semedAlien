@@ -15,5 +15,9 @@ export const alienService = {
 
   saveDetail(data) {
     return api.post('/internal/alien/SaveAlienDetail', data)
+  },
+
+  search(params) {
+    return api.post('/internal/alien/SearchAliens', params)
   }
 } 

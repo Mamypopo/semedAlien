@@ -1,4 +1,4 @@
-import { getAlienByAlCode, getAlienCodeList, getAlienList, saveAlienDetail, syncData } from "./alien.service.js"
+import { getAlienByAlCode, getAlienCodeList, getAlienList, saveAlienDetail, syncData, searchAliens } from "./alien.service.js"
 
 /**
  * 
@@ -90,3 +90,14 @@ export const saveAlienDetailHandler = async (req, res, next) => {
   }
 }
 
+
+export const searchAliensHandler = async (req, res) => {
+  try {
+    const { hn, alcode, name } = req.body;
+    const aliens = await searchAliens({ hn, alcode, name });
+    res.status(200).json(aliens);
+  } catch (error) {
+    console.error('Search aliens error:', error);
+    res.status(500).send();
+  }
+};
