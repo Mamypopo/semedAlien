@@ -241,6 +241,16 @@
         <h2 class="text-xl font-semibold mb-4">Health Check Information</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
+      <label class="block text-gray-700 text-sm font-bold mb-2">
+        วันที่ตรวจสุขภาพ
+      </label>
+      <input
+        v-model="form.healthCheck.alchkdate"
+        type="date"
+        class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      />
+    </div>
+          <div>
             <label class="block text-gray-700 text-sm font-bold mb-2"> โรงพยาบาล </label>
             <input
               v-model="form.healthCheck.alchkhos"
@@ -349,11 +359,15 @@
 
 <script>
 import { alienService } from '@/services/alien'
+import { useAuthStore } from '@/stores/auth'
+import { onMounted } from 'vue'
+
 import Swal from 'sweetalert2'
 
 export default {
   name: 'AlienDetail',
   data() {
+    const authStore = useAuthStore()
     return {
       loading: false,
       error: null,
@@ -386,11 +400,11 @@ export default {
           id: null,
           alchkhos: '',
           alchkstatus: 0,
-          alchkdate: '',
+          alchkdate: new Date().toISOString().split('T')[0], 
           alchkprovid: '',
-          licenseno: '',
-          chkname: '',
-          chkposition: '',
+          licenseno: authStore.user?.licenseno || '', // เลขที่ใบอนุญาต
+          chkname: authStore.user?.chkname || '', // ชื่อแพทย์
+          chkposition: 'แพทย์', // ตำแหน่งแพทย์
           alchkdesc: '',
           alchkdoc: '',
         },
@@ -561,7 +575,6 @@ export default {
       try {
         const formData = {
           ...this.form,
-          // แปลงวันที่ให้อยู่ในรูปแบบ ISO-8601 DateTime
           albdate: this.form.albdate
             ? new Date(this.form.albdate + 'T00:00:00Z').toISOString()
             : null,
@@ -611,7 +624,29 @@ export default {
       }
     },
   },
-
+  watch: {
+  'authStore.user': {
+    handler(newUser) {
+      if (newUser) {
+        console.log('Setting form values:', {
+          licenseno: newUser.licenseno,
+          chkname: newUser.chkname,
+          chkposition: newUser.chkposition
+        })
+        
+        this.form.healthCheck.licenseno = newUser.licenseno || ''
+        console.log('After set licenseno:', this.form.healthCheck.licenseno)
+        
+        this.form.healthCheck.chkname = newUser.chkname || ''
+        console.log('After set chkname:', this.form.healthCheck.chkname)
+        
+        this.form.healthCheck.chkposition = newUser.chkposition || 'แพทย์'
+        console.log('After set chkposition:', this.form.healthCheck.chkposition)
+      }
+    },
+    immediate: true
+  }
+},
   mounted() {
     this.fetchAlienDetail()
   },

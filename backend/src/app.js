@@ -4,6 +4,7 @@ import cors from 'cors';
 import appConfig from './app.config.js';
 import internalRoute from './internal/internal.routes.js';
 import externalRoute from './external/external.routes.js';
+import authRoutes from './auth/auth.routes.js'
 
 dotenv.config({
   path: '../.env'
@@ -18,6 +19,8 @@ app.use(express.json());
 app.use('/internal', internalRoute);
 
 app.use('/external', externalRoute)
+
+app.use('/auth', authRoutes)
 
 app.get('/', () => {
   console.info(`Backend run on port ${appConfig.appPort}`)

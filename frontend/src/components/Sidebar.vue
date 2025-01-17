@@ -18,6 +18,14 @@
             <span class="font-medium">{{ item.name }}</span>
           </div>
         </router-link>
+        <div 
+          @click="handleLogout" 
+          class="block px-4 py-3 hover:bg-gray-800 transition-all rounded-l-lg cursor-pointer mt-4 text-red-400"
+        >
+          <div class="flex items-center">
+            <span class="font-medium">ออกจากระบบ</span>
+          </div>
+        </div>
       </div>
     </nav>
 
@@ -28,6 +36,8 @@
 </template>
 
 <script>
+import { useAuthStore } from '@/stores/auth'
+import Swal from 'sweetalert2'
 export default {
   name: 'SidebarMenu',
   data() {
@@ -64,6 +74,34 @@ export default {
     isActive(path) {
       return this.$route.path.startsWith(path)
     },
+    async handleLogout() {
+      // แสดง confirm dialog
+      const result = await Swal.fire({
+        title: 'ยืนยันการออกจากระบบ',
+        text: 'คุณต้องการออกจากระบบใช่หรือไม่?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ใช่, ออกจากระบบ',
+        cancelButtonText: 'ยกเลิก'
+      })
+
+      if (result.isConfirmed) {
+        const authStore = useAuthStore()
+        authStore.logout()
+        
+        // แสดง success message
+        await Swal.fire({
+          icon: 'success',
+          title: 'ออกจากระบบสำเร็จ',
+          timer: 1500,
+          showConfirmButton: false
+        })
+        
+        this.$router.push('/login')
+      }
+    }
   },
 }
 </script>
