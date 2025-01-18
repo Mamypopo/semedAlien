@@ -5,8 +5,8 @@ TRUNCATE TABLE "Employers" CASCADE;
 TRUNCATE TABLE "Users" CASCADE;
 
 -- Reset sequences
--- ALTER SEQUENCE "Users_id_seq" RESTART WITH 1;
--- ALTER SEQUENCE "Employers_id_seq" RESTART WITH 1;
+ALTER SEQUENCE "Users_id_seq" RESTART WITH 1;
+ALTER SEQUENCE "Employers_id_seq" RESTART WITH 1;
 
 
 INSERT INTO "Users" (email, password, fullname, role)

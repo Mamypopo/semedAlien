@@ -9,13 +9,13 @@ import AlienSearch from '@/views/AlienSearch.vue'
 import RegisterComponent from '../views/auth/Register.vue'
 import LoginComponent from '../views/auth/Login.vue'
 import { useAuthStore } from '@/stores/auth'
-
+import { authService } from '@/services/auth'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      redirect: '/login' 
+      redirect: '/login'
     },
     {
       path: '/login',
@@ -28,7 +28,7 @@ const router = createRouter({
       name: 'Register',
       component: RegisterComponent,
       meta: { requiresGuest: true }
-    },  
+    },
     {
       path: '/aliens',
       name: 'AlienList',
@@ -72,24 +72,31 @@ const router = createRouter({
       component: DoctorAssessment,
       meta: { requiresAuth: true }
     },
-  
+
   ],
-  
+
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
+  if (authStore.token && !authStore.user?.id) {
+    try {
+      const response = await authService.getMe()
 
-  // Redirect to Login if not authenticated and accessing protected routes
+      authStore.setUser(response.data.user)
+    } catch (err) {
+      console.error('GetMe error:', err)
+      authStore.logout()
+      next('/login')
+      return
+    }
+  }
+
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next('/login')
-  }
-  // Redirect to main page if already authenticated and accessing guest-only routes
-  else if (to.meta.requiresGuest && authStore.isAuthenticated) {
-    next('/aliens') // เปลี่ยนเส้นทางไปหน้าแรกของผู้ใช้ที่ล็อกอินแล้ว
-  }
-  // Proceed as normal
-  else {
+  } else if (to.meta.requiresGuest && authStore.isAuthenticated) {
+    next('/aliens')
+  } else {
     next()
   }
 })

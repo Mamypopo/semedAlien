@@ -22,6 +22,7 @@ app.use('/external', externalRoute)
 
 app.use('/auth', authRoutes)
 
+
 app.get('/', () => {
   console.info(`Backend run on port ${appConfig.appPort}`)
 });

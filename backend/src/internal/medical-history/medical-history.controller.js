@@ -1,4 +1,4 @@
-import { getMedicalHistoryByAlcode, saveMedicalHistory, getMedicalHistoryByHN } from "./medical-history.service.js";
+import { getMedicalHistoryByAlcode, saveMedicalHistory, getMedicalHistoryByHN, saveDoctorAssessment, getMedicalHistory, getLatestMedicalHistory } from "./medical-history.service.js";
 
 export const getMedicalHistoryHandler = async (req, res) => {
     try {
@@ -29,7 +29,11 @@ export const saveMedicalHistoryHandler = async (req, res) => {
 
 export const saveDoctorAssessmentHandler = async (req, res) => {
     try {
-        const result = await saveDoctorAssessment(parseInt(req.params.id), req.body);
+        const data = {
+            ...req.body,
+            user_id: req.user.id
+        }
+        const result = await saveDoctorAssessment(parseInt(req.params.id), data);
         res.status(200).json({
             message: 'บันทึกการประเมินสำเร็จ',
             result
@@ -56,6 +60,35 @@ export const getDoctorAssessmentHandler = async (req, res) => {
         console.error('Get doctor assessment error:', error);
         res.status(500).json({
             error: error.message || 'ไม่สามารถดึงข้อมูลได้ กรุณาลองใหม่อีกครั้ง'
+        });
+    }
+};
+
+export const getLatestMedicalHistoryHandler = async (req, res) => {
+    try {
+        const { hn, alcode } = req.params;
+        let history;
+
+        if (hn) {
+            history = await getLatestMedicalHistory({ hn });
+        } else if (alcode) {
+            history = await getLatestMedicalHistory({ alcode });
+        } else {
+            return res.status(400).json({
+                status: 'error',
+                message: 'กรุณาระบุ HN หรือ Alien Code'
+            });
+        }
+
+        res.json({
+            status: 'success',
+            data: history
+        });
+    } catch (error) {
+        console.error('Get latest medical history error:', error);
+        res.status(500).json({
+            status: 'error',
+            message: error.message || 'ไม่สามารถดึงข้อมูลได้'
         });
     }
 };

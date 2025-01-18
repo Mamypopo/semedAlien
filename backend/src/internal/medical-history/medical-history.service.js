@@ -17,7 +17,7 @@ export const getMedicalHistoryByAlcode = async (alcode) => {
                     alsname_en: true,
                     createdOn: true,
                 }
-            }
+            },
         },
         orderBy: {
             createdOn: 'desc'
@@ -44,7 +44,7 @@ export const getMedicalHistoryByHN = async (hn) => {
                     alsname_en: true,
                     createdOn: true,
                 }
-            }
+            },
         },
         orderBy: {
             createdOn: 'desc'
@@ -100,6 +100,7 @@ export const saveDoctorAssessment = async (id, data) => {
             doctor_alcoholism: data.alcoholism,
             doctor_pregnancy: data.pregnancy,
             doctor_other_exam: data.other_exam,
+            updatedBy: data.user_id,
             updatedOn: new Date()
         },
         include: {
@@ -136,4 +137,54 @@ export const getMedicalHistory = async (id) => {
             }
         }
     });
+};
+
+export const getLatestMedicalHistory = async (params) => {
+    const { hn, alcode } = params;
+
+    const medicalHistory = await prisma.medicalHistories.findFirst({
+        where: {
+            ForeignWorkers: {
+                ...(hn ? { hn } : {}),
+                ...(alcode ? { alcode } : {}),
+                isDelete: false
+            },
+            isDelete: false
+        },
+        include: {
+            ForeignWorkers: {
+                select: {
+                    hn: true,
+                    alcode: true,
+                    alname_en: true,
+                    alname_th: true,
+                    alsname_th: true,
+                    alsname_en: true,
+                    algender: true
+                }
+            }
+        },
+        orderBy: {
+            createdOn: 'desc'
+        }
+    });
+
+    if (medicalHistory) {
+        const healthCheck = await prisma.healthChecks.findFirst({
+            where: {
+                alcode: medicalHistory.alcode,
+                isDelete: false
+            },
+            orderBy: {
+                createdOn: 'desc'
+            }
+        });
+
+        return {
+            medicalHistory,
+            healthCheck
+        };
+    }
+
+    return null;
 };

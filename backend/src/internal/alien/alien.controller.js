@@ -80,7 +80,11 @@ export const syncDataHandler = async (req, res, next) => {
  */
 export const saveAlienDetailHandler = async (req, res, next) => {
   try {
-    const result = await saveAlienDetail(req.body);
+    if (!req.user) {
+      return res.status(401).json({ message: 'Unauthorized - User not found' })
+    }
+    const userId = req.user.id;
+    const result = await saveAlienDetail(req.body, userId);
     res.status(200).send({
       result,
     })

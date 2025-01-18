@@ -114,12 +114,10 @@ export const getAlienByAlCode = async (alcode) => {
 }
 
 export const searchAliens = async ({ hn, alcode, name }) => {
-  // สร้าง where condition ตามข้อมูลที่ส่งมา
   const where = {
     isDelete: false
   };
 
-  // เงื่อนไขเฉพาะฟิลด์ที่มีการกรอกข้อมูล
   const conditions = [];
 
   if (hn) {
@@ -139,7 +137,6 @@ export const searchAliens = async ({ hn, alcode, name }) => {
     });
   }
 
-  // ถ้ามีเงื่อนไขการค้นหา ให้ใช้ OR
   if (conditions.length > 0) {
     where.OR = conditions;
   }
@@ -189,7 +186,7 @@ const generateHN = async (provinceCode) => {
   return `${prefix}${runningNumber}`;
 };
 
-export const saveAlienDetail = async (data) => {
+export const saveAlienDetail = async (data, userId) => {
   // ถ้ามี HN อยู่แล้วให้ใช้ค่าเดิม ถ้าไม่มีและมีรหัสจังหวัดให้สร้างใหม่
   let hn = data.hn;
   if (!hn && data.healthCheck?.alchkprovid) {
@@ -221,6 +218,7 @@ export const saveAlienDetail = async (data) => {
       province: data.province,
       postal_code: data.postal_code,
       remark: data.remark,
+      updatedBy: userId,
       updatedOn: new Date(),
     },
     where: {
@@ -241,6 +239,7 @@ export const saveAlienDetail = async (data) => {
         chkposition: data.healthCheck.chkposition,
         alchkdesc: data.healthCheck.alchkdesc,
         alchkdoc: data.healthCheck.alchkdoc,
+        updatedBy: userId,
         updatedOn: new Date(),
       },
       where: {
@@ -260,7 +259,10 @@ export const saveAlienDetail = async (data) => {
         chkposition: data.healthCheck.chkposition,
         alchkdesc: data.healthCheck.alchkdesc,
         alchkdoc: data.healthCheck.alchkdoc,
+        createdBy: userId,
         createdOn: new Date(),
+        updatedBy: userId,
+        updatedOn: new Date(),
       }
     })
   }

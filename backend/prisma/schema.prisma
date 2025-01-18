@@ -22,15 +22,17 @@ model Users {
   chkname     String?
   chkposition String?
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now()) @updatedAt  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
-  CreatedForeignWorkers ForeignWorkers[] @relation("UserCreatedForeignWorker")
-  UpdatedForeignWorkers ForeignWorkers[] @relation("UserUpdatedForeignWorker")
-  CreatedApiRequests    ApiRequests[]    @relation("UserCreatedApiRequest")
-  UpdatedApiRequests    ApiRequests[]    @relation("UserUpdatedApiRequest")
-  CreatedHealthChecks   HealthChecks[]   @relation("UserCreatedHealthCheck")
-  UpdatedHealthChecks   HealthChecks[]   @relation("UserUpdatedHealthCheck")
+  CreatedForeignWorkers   ForeignWorkers[]   @relation("UserCreatedForeignWorker")
+  UpdatedForeignWorkers   ForeignWorkers[]   @relation("UserUpdatedForeignWorker")
+  CreatedApiRequests      ApiRequests[]      @relation("UserCreatedApiRequest")
+  UpdatedApiRequests      ApiRequests[]      @relation("UserUpdatedApiRequest")
+  CreatedHealthChecks     HealthChecks[]     @relation("UserCreatedHealthCheck")
+  UpdatedHealthChecks     HealthChecks[]     @relation("UserUpdatedHealthCheck")
+  CreatedMedicalHistories MedicalHistories[] @relation("UserCreatedMedicalHistory")
+  UpdatedMedicalHistories MedicalHistories[] @relation("UserUpdatedMedicalHistory")
 }
 
 model Employers {
@@ -105,6 +107,9 @@ model HealthChecks {
   updatedBy      Int?
   updatedByUser  Users?         @relation(references: [id], fields: [updatedBy], name: "UserUpdatedHealthCheck")
   updatedOn      DateTime?
+
+  MedicalHistory   MedicalHistories? @relation(fields: [medicalHistoryId], references: [id])
+  medicalHistoryId Int?
 }
 
 model MedicalHistories {
@@ -122,8 +127,6 @@ model MedicalHistories {
 
   // ข้อมูลการประเมินแพทย์
   doctor_assessment_status String? @db.VarChar(20) // PENDING, COMPLETED
-  doctor_health            String? @db.Text // สุขภาพทั่วไป
-  doctor_diagnosis         String? @db.Text // ตรวจวินิจฉัย
   doctor_mental_health     String? @db.Text // สุขภาพจิต
   doctor_tuberculosis      String? @db.Text // ตรวจวัณโรค
 
@@ -140,8 +143,14 @@ model MedicalHistories {
   // Other examination
   doctor_other_exam String? @db.Text // ตรวจอื่นๆ
 
-  createdOn DateTime  @default(now())
-  updatedOn DateTime? @updatedAt
+  isDelete      Boolean        @default(false)
+  createdBy     Int?
+  createdByUser Users?         @relation(references: [id], fields: [createdBy], name: "UserCreatedMedicalHistory")
+  createdOn     DateTime       @default(now())
+  updatedBy     Int?
+  updatedByUser Users?         @relation(references: [id], fields: [updatedBy], name: "UserUpdatedMedicalHistory")
+  updatedOn     DateTime?      @updatedAt
+  HealthChecks  HealthChecks[]
 }
 
 model ApiRequests {

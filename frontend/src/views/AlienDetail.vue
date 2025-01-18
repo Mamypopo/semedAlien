@@ -241,33 +241,19 @@
         <h2 class="text-xl font-semibold mb-4">Health Check Information</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-      <label class="block text-gray-700 text-sm font-bold mb-2">
-        วันที่ตรวจสุขภาพ
-      </label>
-      <input
-        v-model="form.healthCheck.alchkdate"
-        type="date"
-        class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-      />
-    </div>
-          <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2"> โรงพยาบาล </label>
+            <label class="block text-gray-700 text-sm font-bold mb-2">วันที่ตรวจสุขภาพ</label>
             <input
-              v-model="form.healthCheck.alchkhos"
-              type="text"
-              maxlength="100"
-              class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              v-model="form.healthCheck.alchkdate"
+              type="date"
+              class="border rounded w-full py-2 px-3"
             />
           </div>
 
           <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2">
-              รหัสจังหวัดที่ตรวจสุขภาพ
-            </label>
-            <select
-              v-model="form.healthCheck.alchkprovid"
-              class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            <label class="block text-gray-700 text-sm font-bold mb-2"
+              >รหัสจังหวัดที่ตรวจสุขภาพ</label
             >
+            <select v-model="form.healthCheck.alchkprovid" class="border rounded w-full py-2 px-3">
               <option value="">เลือกจังหวัด</option>
               <option v-for="province in provinces" :key="province.code" :value="province.code">
                 {{ province.code }} - {{ province.name }}
@@ -275,68 +261,13 @@
             </select>
           </div>
 
-          <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2">
-              เลขที่ใบอนุญาตประกอบวิชาชีพ
-            </label>
-            <input
-              v-model="form.healthCheck.licenseno"
-              type="text"
-              maxlength="50"
-              class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-          </div>
-          <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2">
-              ชื่อ-นามสกุลแพทย์ พร้อมคำนำหน้า
-            </label>
-            <input
-              v-model="form.healthCheck.chkname"
-              type="text"
-              maxlength="100"
-              class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-          </div>
-          <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2"> สถานะ </label>
-            <select
-              v-model="form.healthCheck.alchkstatus"
-              class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            >
-              <option value="1">ตรวจผ่าน</option>
-              <option value="2">ตรวจผ่านแบบต้องให้การรักษาและติดตามผล</option>
-              <option value="3">ตรวจไม่ผ่าน</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2"> ตำแหน่งแพทย์ </label>
-            <input
-              v-model="form.healthCheck.chkposition"
-              type="text"
-              maxlength="50"
-              class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-          </div>
           <div class="col-span-2">
-            <label class="block text-gray-700 text-sm font-bold mb-2">
-              รายละเอียดผลตรวจสุขภาพเพิ่มเติม
-            </label>
-            <textarea
-              v-model="form.healthCheck.alchkdesc"
-              rows="3"
-              maxlength="500"
-              class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            ></textarea>
-          </div>
-          <div class="col-span-2">
-            <label class="block text-gray-700 text-sm font-bold mb-2">
-              URL เอกสารอ้างอิงผลการตรวจสุขภาพ
-            </label>
+            <label class="block text-gray-700 text-sm font-bold mb-2">โรงพยาบาล</label>
             <input
-              v-model="form.healthCheck.alchkdoc"
+              :value="'โรงพยาบาลซีเมดลีฟวิ่งแคร์'"
               type="text"
-              maxlength="200"
-              class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              readonly
+              class="bg-gray-100 border rounded w-full py-2 px-3"
             />
           </div>
         </div>
@@ -398,15 +329,9 @@ export default {
         remark: '',
         healthCheck: {
           id: null,
-          alchkhos: '',
-          alchkstatus: 0,
-          alchkdate: new Date().toISOString().split('T')[0], 
+          alchkhos: 'โรงพยาบาลซีเมดลีฟวิ่งแคร์',
+          alchkdate: new Date().toISOString().split('T')[0],
           alchkprovid: '',
-          licenseno: authStore.user?.licenseno || '', // เลขที่ใบอนุญาต
-          chkname: authStore.user?.chkname || '', // ชื่อแพทย์
-          chkposition: 'แพทย์', // ตำแหน่งแพทย์
-          alchkdesc: '',
-          alchkdoc: '',
         },
       },
       provinces: [
@@ -526,19 +451,15 @@ export default {
           alposid: Number(alien.alposid),
           blood_group: alien.blood_group ? alien.blood_group.trim() : '',
           healthCheck: {
-            ...(alien.healthCheck || {}),
-            // แปลง status เป็น string เพื่อใช้กับ select
-            alchkstatus: alien.healthCheck?.alchkstatus?.toString() || '',
-            alchkdate: alien.healthCheck?.alchkdate
-              ? new Date(alien.healthCheck.alchkdate).toISOString().split('T')[0]
-              : '',
-            alchkhos: alien.healthCheck?.alchkhos || '',
-            alchkprovid: alien.healthCheck?.alchkprovid || '',
-            licenseno: alien.healthCheck?.licenseno || '',
-            chkname: alien.healthCheck?.chkname || '',
-            chkposition: alien.healthCheck?.chkposition || '',
-            alchkdesc: alien.healthCheck?.alchkdesc || '',
-            alchkdoc: alien.healthCheck?.alchkdoc || '',
+            alchkhos: 'โรงพยาบาลซีเมดลีฟวิ่งแคร์',
+            alchkdate: new Date().toISOString().split('T')[0],
+            alchkprovid: '',
+            alchkstatus: 0,
+            alchkdesc: '',
+            alchkdoc: '',
+            chkname: '',
+            chkposition: '',
+            licenseno: '',
           },
         }
       } catch (error) {
@@ -583,22 +504,19 @@ export default {
           algender: Number(this.form.algender),
           alposid: Number(this.form.alposid),
           healthCheck: {
-            ...this.form.healthCheck,
-            alchkstatus: Number(this.form.healthCheck.alchkstatus),
+            alchkhos: 'โรงพยาบาลซีเมดลีฟวิ่งแคร์',
             alchkdate: this.form.healthCheck.alchkdate
               ? new Date(this.form.healthCheck.alchkdate).toISOString()
               : null,
-
-            alchkhos: this.form.healthCheck.alchkhos?.substring(0, 500) || '',
             alchkprovid: this.form.healthCheck.alchkprovid?.substring(0, 2) || '',
-            licenseno: this.form.healthCheck.licenseno?.substring(0, 50) || '',
-            chkname: this.form.healthCheck.chkname?.substring(0, 100) || '',
-            chkposition: this.form.healthCheck.chkposition?.substring(0, 100) || '',
-            alchkdesc: this.form.healthCheck.alchkdesc?.substring(0, 500) || '',
-            alchkdoc: this.form.healthCheck.alchkdoc?.substring(0, 500) || '',
+            alchkstatus: 0,
+            alchkdesc: '',
+            alchkdoc: '',
+            chkname: '',
+            chkposition: '',
+            licenseno: '',
           },
         }
-
         await alienService.saveDetail(formData)
 
         await Swal.fire({
@@ -611,6 +529,7 @@ export default {
 
         this.$router.push('/aliens')
       } catch (error) {
+        console.error('Save error:', error)
         await Swal.fire({
           icon: 'error',
           title: 'เกิดข้อผิดพลาด',
@@ -624,29 +543,6 @@ export default {
       }
     },
   },
-  watch: {
-  'authStore.user': {
-    handler(newUser) {
-      if (newUser) {
-        console.log('Setting form values:', {
-          licenseno: newUser.licenseno,
-          chkname: newUser.chkname,
-          chkposition: newUser.chkposition
-        })
-        
-        this.form.healthCheck.licenseno = newUser.licenseno || ''
-        console.log('After set licenseno:', this.form.healthCheck.licenseno)
-        
-        this.form.healthCheck.chkname = newUser.chkname || ''
-        console.log('After set chkname:', this.form.healthCheck.chkname)
-        
-        this.form.healthCheck.chkposition = newUser.chkposition || 'แพทย์'
-        console.log('After set chkposition:', this.form.healthCheck.chkposition)
-      }
-    },
-    immediate: true
-  }
-},
   mounted() {
     this.fetchAlienDetail()
   },

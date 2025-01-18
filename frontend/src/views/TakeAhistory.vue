@@ -72,7 +72,6 @@
       </table>
     </div>
 
-    <!-- Modal ซักประวัติ -->
     <MedicalHistoryModal
       v-if="showModal"
       :alien="selectedAlien"
@@ -152,7 +151,7 @@ export default {
 
     async save(formData) {
       try {
-        await medicalHistoryService.save(formData)
+        await medicalHistoryService.takeHistory(formData)
         this.showModal = false
         Swal.fire({
           icon: 'success',
