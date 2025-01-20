@@ -64,11 +64,20 @@ export const getAlienCodeListHandler = async (req, res, next) => {
  */
 export const syncDataHandler = async (req, res, next) => {
   try {
+    console.log('Starting sync data...');
     await syncData();
-    res.status(200).send();
+    console.log('Sync completed successfully');
+    res.status(200).json({ message: 'Sync completed' });
   } catch (error) {
-    console.error('Sync data error: ', error);
-    res.status(500).send()
+    console.error('Sync data error details:', {
+      message: error.message,
+      stack: error.stack,
+      response: error.response?.data
+    });
+    res.status(500).json({
+      error: 'Sync failed',
+      details: error.message
+    });
   }
 }
 

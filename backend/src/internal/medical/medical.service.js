@@ -5,7 +5,11 @@ export const getMedicalRecordById = async (id) => {
     const medicalHistory = await prisma.medicalHistories.findUnique({
         where: { id: recordId },
         include: {
-            ForeignWorkers: true
+            ForeignWorkers: {
+                include: {
+                    Employers: true
+                }
+            }
         }
     })
 

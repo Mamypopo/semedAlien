@@ -62,55 +62,55 @@ export const getAlienByAlCode = async (alcode) => {
   }
 
   // get data from external api;
-  // const apiResponse = await getAlienListFromService({
-  //   reqcode,
-  // });
+  const apiResponse = await getAlienListFromService({
+    reqcode,
+  });
 
-  // let employer = await prisma.employers.findFirst({
-  //   select: {
-  //     id: true,
-  //     empname: true,
-  //     btname: true,
-  //     wkaddress: true,
-  //   },
-  //   where: {
-  //     empname: apiResponse.empname,
-  //   }
-  // });
+  let employer = await prisma.employers.findFirst({
+    select: {
+      id: true,
+      empname: true,
+      btname: true,
+      wkaddress: true,
+    },
+    where: {
+      empname: apiResponse.empname,
+    }
+  });
 
-  // if (!employer) {
-  //   employer = await prisma.employers.create({
-  //     data: {
-  //       empname: apiResponse.empname,
-  //       btname: apiResponse.btname,
-  //       wkaddress: apiResponse.btname,
-  //     }
-  //   })
-  // }
+  if (!employer) {
+    employer = await prisma.employers.create({
+      data: {
+        empname: apiResponse.empname,
+        btname: apiResponse.btname,
+        wkaddress: apiResponse.btname,
+      }
+    })
+  }
 
 
-  // const createResult = await prisma.foreignWorkers.create({
-  //   data: {
-  //     employer_id: employer.id,
-  //     alcode: apiResponse.alientlist[0].alcode,
-  //     altype: apiResponse.alientlist[0].altype,
-  //     alprefix: apiResponse.alientlist[0].alprefix,
-  //     alprefixen: apiResponse.alientlist[0].alprefixen,
-  //     alname_en: apiResponse.alientlist[0].alnameen,
-  //     alsname_en: apiResponse.alientlist[0].alsnameen,
-  //     algender: apiResponse.alientlist[0].algender,
-  //     alnation: apiResponse.alientlist[0].alnation,
-  //     alposid: apiResponse.alientlist[0].alposid,
-  //     createdOn: new Date(),
-  //   }
-  // });
+  const createResult = await prisma.foreignWorkers.create({
+    data: {
+      employer_id: employer.id,
+      alcode: apiResponse.alientlist[0].alcode,
+      altype: apiResponse.alientlist[0].altype,
+      alprefix: apiResponse.alientlist[0].alprefix,
+      alprefixen: apiResponse.alientlist[0].alprefixen,
+      alname_en: apiResponse.alientlist[0].alnameen,
+      alsname_en: apiResponse.alientlist[0].alsnameen,
+      algender: apiResponse.alientlist[0].algender,
+      alnation: apiResponse.alientlist[0].alnation,
+      alposid: apiResponse.alientlist[0].alposid,
+      createdOn: new Date(),
+    }
+  });
 
-  // return {
-  //   ...createResult,
-  //   employer: {
-  //     ...employer,
-  //   }
-  // };
+  return {
+    ...createResult,
+    employer: {
+      ...employer,
+    }
+  };
 }
 
 export const searchAliens = async ({ hn, alcode, name }) => {
@@ -164,7 +164,6 @@ const generateHN = async (provinceCode) => {
   const currentYear = (new Date().getFullYear() + 543).toString().slice(-2);
   const prefix = `A${currentYear}${provinceCode}`;
 
-  // หาเลข running number ล่าสุดของปีและจังหวัดนี้
   const lastHN = await prisma.foreignWorkers.findFirst({
     where: {
       AND: [
@@ -187,7 +186,6 @@ const generateHN = async (provinceCode) => {
 };
 
 export const saveAlienDetail = async (data, userId) => {
-  // ถ้ามี HN อยู่แล้วให้ใช้ค่าเดิม ถ้าไม่มีและมีรหัสจังหวัดให้สร้างใหม่
   let hn = data.hn;
   if (!hn && data.healthCheck?.alchkprovid) {
     hn = await generateHN(data.healthCheck.alchkprovid);
@@ -268,26 +266,34 @@ export const saveAlienDetail = async (data, userId) => {
   }
 
   // comment ไว้สำหรับรอ api ของจริง
-  // await updateHealthCheckResult({
-  //   alcode: data.alcode,
-  //   alchkhos: data.healthCheck.alchkhos,
-  //   alchkstatus: data.healthCheck.alchkstatus,
-  //   alchkdate: data.healthCheck.alchkdate,
-  //   alchkprovid: data.healthCheck.alchkprovid,
-  //   licenseno: data.healthCheck.licenseno,
-  //   chkname: data.healthCheck.chkname,
-  //   chkposition: data.healthCheck.chkposition,
-  //   alchkdesc: data.healthCheck.alchkdesc,
-  //   alchkdoc: data.healthCheck.alchkdoc,
-  // })
+  await updateHealthCheckResult({
+    alcode: data.alcode,
+    alchkhos: data.healthCheck.alchkhos,
+    alchkstatus: data.healthCheck.alchkstatus,
+    alchkdate: data.healthCheck.alchkdate,
+    alchkprovid: data.healthCheck.alchkprovid,
+    licenseno: data.healthCheck.licenseno,
+    chkname: data.healthCheck.chkname,
+    chkposition: data.healthCheck.chkposition,
+    alchkdesc: data.healthCheck.alchkdesc,
+    alchkdoc: data.healthCheck.alchkdoc,
+  })
 
   return result;
 }
 
 export const syncData = async (reqcode) => {
+  console.log('Fetching data from DOE API...');
   const apiResponse = await getAlienListFromService({
     reqcode,
   });
+  console.log('DOE API Response:', JSON.stringify(apiResponse, null, 2)); // เพิ่ม log
+
+
+  // ตรวจสอบว่ามีข้อมูลจริงๆ
+  if (!apiResponse || !apiResponse.alienlist) {
+    throw new Error('Invalid API response structure');
+  }
 
   const existsAliens = await prisma.foreignWorkers.findMany({
     select: {

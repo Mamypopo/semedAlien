@@ -1,18 +1,16 @@
 import axios from "axios";
 import appConfig from "../app.config.js";
 
-const instance = axios.create();
-//ใช้แบบ  instance axios และไปใช้ในpath
-// const instance = axios.create({
-//   baseURL : 'https;//......./'
-// });
+const instance = axios.create({
+  baseURL: 'https://test-workpermit2024.doe.go.th/dataapi' // set url ที่จะใช้เป็น base
+});
 
 export const getAlienListFromService = async ({
   alcode = "",
   reqcode = "",
 }) => {
   try {
-    const url = "your_url_here"; // Replace with the actual URL endpoint 
+
     const params = {
       token: appConfig.apiToken,
     };
@@ -20,19 +18,18 @@ export const getAlienListFromService = async ({
     if (alcode) {
       params.alcode = alcode;
     }
+
     if (reqcode) {
       params.reqcode = reqcode;
     }
 
-    const { data } = await instance.get(url, {
+    const { data } = await instance.get('/alien', { // ใช้แค่ url ต่อจาก /dataapi
       params,
     });
 
-    
-    // ใช้อันนี้แทนถ้าได้ url
-    // const { data } = await instance.get('/alien', {
-    //   params,
-    // });
+    if (!data || !data.success) {
+      throw new Error(data.message || "Unexpected error occurred while fetching data.");
+    }
 
     return data;
   } catch (error) {
@@ -43,7 +40,7 @@ export const getAlienListFromService = async ({
 
 export const updateHealthCheckResult = async (data) => {
   try {
-    await instance.post("url", {
+    await instance.post("/alienhealth/update", {
       token: appConfig.apiToken,
       alcode: data.alcode,
       alchkhos: data.alchkhos,
@@ -56,6 +53,10 @@ export const updateHealthCheckResult = async (data) => {
       alchkdesc: data.alchkdesc,
       alchkdoc: data.alchkdoc,
     });
+    if (!response.data || !response.data.success) {
+      throw new Error(response.data.message || "Failed to update health check result.");
+    }
+    return response.data;
   } catch (error) {
     console.error("update healthcheck error: ", error);
     throw error;
